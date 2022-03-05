@@ -1,0 +1,20 @@
+<template>
+	<div>
+		<!-- 分割线 -->
+		<div class="divider"/>
+	</div>
+</template>
+
+<script>
+	export default {
+		
+	}
+</script>
+
+<style>
+.divider{
+	width: 750px;
+	height: 18px;
+	background-color: #f8f9fb;
+}
+</style>

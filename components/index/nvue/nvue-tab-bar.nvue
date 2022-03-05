@@ -1,0 +1,57 @@
+<template>
+	<div>
+		<scroller class="w-100 flex-row" style="height: 75px;" :show-scrollbar="false" scroll-direction="horizontal">
+			<div style="height: 75px; width: 120px;" class="j-center a-center" v-for="(item,index) in tabBars" :key="index" @click="tabChange(index,item)" :ref="`tab${index}`">
+				<text :style="{'color':index===tabIndex ? '#FD6801' : '', 'border-color':index===tabIndex ? '#FD6801' : '#FFFFFF'}" class="font tab-bar-item">{{item.name}}</text>
+			</div>
+		</scroller>
+	</div>
+</template>
+
+<script>
+	let dom = weex.requireModule('dom')
+	export default {
+		props:{
+			tabBars:{
+				type:Array,
+				default:[]
+			},
+			tabIndex:{
+				type:Number,
+				default:0
+			}
+		},
+		watch:{
+			tabIndex(newval){
+				this.tabChange(newval)
+			}
+		},
+		methods:{
+			async tabChange(index,item){
+				this.$emit('tabChange',index,item)
+				let el = this.$refs[`tab${index}`][0]
+				dom.getComponentRect(el, res=>{
+					//判断当前节点的页面布局位置，<0 就在左边的外边，大于 750 ，就在右的外边
+					if(res.size.right>750){
+						//因为只能看到 6个元素，所以加上自己就是 7个 7 - 5 也就是跳到第二个元素
+						let newEl = this.$refs[`tab${index-5}`][0]
+						dom.scrollToElement(newEl,{})
+					}
+					//处于左边
+					if(res.size.left<0){
+						dom.scrollToElement(el,{})
+					}
+				})
+			},
+		}
+	}
+</script>
+<style src='@/common/zcm-main-nvue.css'></style>
+<style scoped>
+.tab-bar-item{
+	height: 75px; 
+	line-height: 75px; 
+	border-bottom-width: 5px; 
+	border-style: solid;
+}
+</style>

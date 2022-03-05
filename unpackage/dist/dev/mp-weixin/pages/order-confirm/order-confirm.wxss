@@ -1,0 +1,10 @@
+
+page {
+	background-color: #fd6801;
+}
+
+
+.bg-color {
+	background-color: #efeeec;
+}
+

@@ -1,0 +1,231 @@
+<template>
+	<div>
+		<div class="w-100" style="height: 75px;"><nvue-tab-bar :tabBars="tabBars" :tabIndex="tabIndex" ref="tabbar" @tabChange="tabChange" /></div>
+		<slider class="w-100 flex-1" :index="tabIndex" @change="sliderChange" :infinite="false">
+			<!-- list 可以上下划动 -->
+			<list :show-scrollbar="false" v-for="(item, index) in newsitems" :key="index">
+				<refresh class="w-100 flex-row a-center j-center" style="height: 80px;" :display="item.downLoading" @refresh="refresh" @pullingdown="pullingdown">
+					<text class="font-md text-muted">{{ item.refreshText }}</text>
+				</refresh>
+				<!-- 有数据 -->
+				<template v-if="item.data.length > 0 && item.firstLoading==='after'">
+						<cell v-for="(item2, index2) in item.data" :key="index2">
+							<!-- 轮播图 -->
+							<nvue-slider v-if="item2.type === 'swiper'" :swipers="item2.data"></nvue-slider>
+
+							<template v-if="item2.type === 'indexnavs'">
+								<!-- 图标 -->
+								<nvue-index-nav :indexNavs="item2.data" />
+								<nvue-divider />
+							</template>
+
+							<template v-if="item2.type === 'threeAdv'">
+								<!-- 三图广告 -->
+								<nvue-three-advs :threeAdv="item2.data" />
+								<nvue-divider />
+							</template>
+
+							<!-- 大图 -->
+							<nvue-one-advs :oneAdv="item2.data" v-if="item2.type === 'oneAdv'"></nvue-one-advs>
+
+							<!-- 公共列表 -->
+							<div class="w-100 row j-sb" style="margin-top: 4px;" v-if="item2.type === 'list'">
+								<block v-for="(item3, index3) in item2.data" :key="index3">
+									<nvue-common-list :item="item3" :index="index3" />
+								</block>
+							</div>
+						</cell>
+				</template>
+				<!-- 加载中 -->
+				<template v-else-if="item.firstLoading==='ing'">
+					<!-- <my-loading/> -->
+					<cell class="j-center a-center"><text class="mt-5 font-md text-light-muted">加载中...</text></cell>
+				</template>
+				<!-- 没有数据 -->
+				<template v-else>
+					<cell class="j-center a-center"><text class="mt-5 font-md text-light-muted">暂无数据</text></cell>
+				</template>
+				<loading class="flex-row j-center a-center w-100" :display="item.upLoading" @loading="loadingEvent"><text class="font-md text-muted my-2">加载中...</text></loading>
+			</list>
+		</slider>
+	</div>
+</template>
+
+<script>
+import nvueTabBar from '@/components/index/nvue/nvue-tab-bar.nvue';
+import nvueSlider from '@/components/index/nvue/nvue-slider.nvue';
+import nvueIndexNav from '@/components/index/nvue/nvue-index-nav.nvue';
+import nvueDivider from '@/components/common/nvue/nvue-divider.nvue';
+import nvueThreeAdvs from '@/components/index/nvue/nvue-three-advs.nvue';
+import nvueOneAdvs from '@/components/index/nvue/nvue-one-adv.nvue';
+import nvueCommonList from '@/components/common/nvue/nvue-common-list.nvue';
+import _api from '@/network/request.js';
+
+const currentWebview = plus.webview.currentWebview();
+export default {
+	data() {
+		return {
+			tabIndex: 0,
+			tabBars: [],
+			newsitems: [],
+			sliderFlag: false
+		};
+	},
+	components: {
+		nvueTabBar,
+		nvueSlider,
+		nvueIndexNav,
+		nvueDivider,
+		nvueThreeAdvs,
+		nvueOneAdvs,
+		nvueCommonList
+	},
+	created() {
+		//因为nvue 没有 onshow 事件来触发 数据更新,所以使用以下方法
+		//通过 show 事件来监听当前窗口变化  记得=在 beforeDestroy销毁
+		currentWebview.addEventListener('show', e => {
+			console.log('show');
+		});
+
+		// this.newsitems = this.__init();
+		this.__init();
+	},
+	// 输入框点击时触发
+	onNavigationBarSearchInputClicked() {
+		uni.navigateTo({
+			url: '/pages/search/search'
+		});
+	},
+	// 按钮点击时触发
+	onNavigationBarButtonTap(e) {
+		if(e.index===0){
+			uni.navigateTo({
+				url:'/pages/msg-list/msg-list'
+			})
+		}
+	},
+	beforeDestroy() {
+		//销毁事件处理函数
+		currentWebview.removeEventListener('show', e => {});
+	},
+	methods: {
+		// 加载更多模拟数据
+		addData(refresh = false) {
+			
+			//拿到当前索引
+			let e = this.tabIndex;
+			let msg = '';
+			let arr = [];
+			//首次加载后后面不在加载
+			if(this.newsitems[e].firstLoading==='before'){
+				this.newsitems[e].firstLoading='ing'
+				//不是首次加载
+				let id = this.tabBars[e].id;
+				let page = !refresh ? Math.ceil(this.newsitems[e].data.length / 5 + 1) : 1;
+				_api.get(`index_category/${id}/data/${page}`).then(res => {
+					arr = !refresh ? res || [] : res;
+					this.$nextTick(() => {
+						this.newsitems[e].data = Object.assign(this.newsitems[e].data, [...arr])
+						this.newsitems[e].data=this.newsitems[e].data.slice()
+					});
+					this.newsitems[e].firstLoading='after'
+				});
+			}
+			
+			this.$nextTick(()=>{
+				msg = !refresh ? '加载成功' : '刷新成功';
+				if (arr.length < 5 && !this.sliderFlag&&!refresh) {
+					msg = this.newsitems[e].loadingText = '没有更多了';
+				}	
+				this.hideUpload(e, msg, refresh);
+			})
+			
+		},
+		__init() {
+			_api.get('index_category/data').then(res => {
+				this.tabBars = res.category;
+				//把帝沙学院改了
+				let result = res.data.map(i=>{
+					if(i.type === 'list'){
+						i.data.map(v=>{
+							v.title = v.title.replace('帝莎学院','小袁')
+							return v
+						})
+					}
+					return i
+				})
+				this.newsitems = this.setNewsitems(res);
+			});
+		},
+		setNewsitems(res) {
+			// 拿到tabbars的长度，根据长度生成页面
+			let tablength = this.tabBars.length;
+			let ary = [];
+			let firstLoading =''
+			for (let i = 0; i < tablength; i++) {
+				firstLoading=i === 0 ? 'after':'before'
+				let aryItem = {
+					downLoading: 'hide',
+					refreshText: '下拉可以刷新',
+					upLoading: 'hide',
+					firstLoading,
+					data: []
+				};
+				// 给页面添加数据
+				if (this.tabBars[i].template === 'index') {
+					aryItem.data = res.data;
+				}
+				ary.push(aryItem);
+			}
+			return ary;
+		},
+		//被上拉松手时触发。
+		loadingEvent() {
+			let index = this.tabIndex;
+			this.newsitems[index].upLoading = 'show';
+			if (this.newsitems[index].loadingText === '没有更多了') {
+				return this.hideUpload(index, '没有更多了');
+			}
+			//添加数据
+			this.addData();
+		},
+		//隐藏上拉加载
+		hideUpload(index, msg = '', refresh = false) {
+			this.$nextTick(() => {
+				refresh ? (this.newsitems[index].downLoading = 'hide') : (this.newsitems[index].upLoading = 'hide');
+				if (!this.sliderFlag) {
+					uni.showToast({
+						title: msg,
+						icon: 'none'
+					});
+				}
+				this.sliderFlag = false;
+			});
+		},
+		//被下拉完成时触发。
+		refresh() {
+			let index = this.tabIndex;
+			this.newsitems[index].refreshText = '正在刷新...';
+			this.newsitems[index].downLoading = 'show';
+			this.addData(true);
+		},
+		//被下拉时触发
+		pullingdown(e) {
+			let index = this.tabIndex;
+			e.pullingDistance > e.viewHeight ? (this.newsitems[index].refreshText = '松手就能刷新喽') : (this.newsitems[index].refreshText = '下拉可以刷新');
+		},
+		//点击选项卡事件
+		tabChange(index) {
+			this.tabIndex = index;
+		},
+		//监听横向滚动事件 点击 tab栏也会触发该事件
+		sliderChange(event) {
+			this.tabIndex = event.index;
+			this.sliderFlag = true;
+			this.addData();
+		}
+	}
+};
+</script>
+<style src="@/common/zcm-main-nvue.css"></style>
+<style></style>

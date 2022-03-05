@@ -1,0 +1,13 @@
+{
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "uni-nav-bar": "/uni_modules/uni-nav-bar/components/uni-nav-bar/uni-nav-bar",
+    "price": "/components/common/price",
+    "uni-number-box": "/components/uni-ui/uni-number-box/uni-number-box",
+    "card": "/components/common/card",
+    "radio-groups": "/components/common/radio-groups",
+    "common-list": "/components/common/common-list",
+    "banner-text": "/components/common/banner-text",
+    "sku-popup": "/components/card/sku-popup"
+  }
+}

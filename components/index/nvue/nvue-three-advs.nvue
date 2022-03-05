@@ -1,0 +1,23 @@
+<template>
+	<!-- 三图广告 -->
+	<div class="w-100 row">
+		<div class="col-6">
+			<image :src="threeAdv[0].src" style="width: 373px; height: 530px;"></image>
+		</div>
+		<div class="col-6 j-sb">
+			<image :src="threeAdv[1].src" style="width: 375px; height: 263.5px;"></image>
+			<image :src="threeAdv[2].src" style="width: 375px; height: 263.5px;"></image>
+		</div>
+	</div>
+</template>
+
+<script>
+	export default{
+		props:{
+			threeAdv:Array
+		}
+	}
+</script>
+<style src='@/common/zcm-main-nvue.css'></style>
+<style>
+</style>

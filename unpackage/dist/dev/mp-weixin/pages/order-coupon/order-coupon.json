@@ -1,0 +1,8 @@
+{
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "no-thing": "/components/common/no-thing",
+    "order-list": "/components/order/order-list",
+    "coupon": "/components/order-coupon/coupon"
+  }
+}

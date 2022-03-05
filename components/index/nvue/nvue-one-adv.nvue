@@ -1,0 +1,17 @@
+<template>
+	<div class="w-100">
+		<div class="w-100"><text class="font font-weight ml-2 py-2">{{oneAdv.title}}</text></div>
+		<image :src="oneAdv.cover" style="width: 750px; height: 300px;"></image>
+	</div>
+</template>
+
+<script>
+	export default{
+		props:{
+			oneAdv:Object
+		}
+	}
+</script>
+<style src='@/common/zcm-main-nvue.css'></style>
+<style>
+</style>

@@ -1,0 +1,12 @@
+
+.cate-item.data-v-1ca35134 {
+	background-color: #fff2ec;
+	color: #7d706a;
+	border-color: #f8e7e2;
+}
+.cate-item.cate-item-active.data-v-1ca35134 {
+	background-color: #ff7a00 !important;
+	color: #fefae1 !important;
+	border-color: #ffdaa9 !important;
+}
+

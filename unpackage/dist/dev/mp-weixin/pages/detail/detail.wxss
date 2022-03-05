@@ -1,0 +1,12 @@
+
+.uparse.data-v-3e159eb4{
+	padding: 0 !important;
+	margin-left: -5rpx;
+	line-height: 0 !important;
+}
+
+
+/* ::v-deep .uni-list-item__content{
+	flex-wrap: wrap !important;
+} */
+

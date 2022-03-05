@@ -1,0 +1,29 @@
+<template>
+	<div>
+		<!-- 图标 -->
+		<div class="w-100 row px-2 py-1-5">
+			<div class="j-center a-center my-2 index-nav" v-for="(item,index) in indexNavs" :key="i">
+				<image :src="item.src" class="index-nav-image"></image>
+				<text class="font-sm py-1-5 mt-1">{{item.text}}</text>
+			</div>
+		</div>
+	</div>
+</template>
+
+<script>
+	export default {
+		props:{
+			indexNavs:Array
+		}
+	}
+</script>
+
+<style src='@/common/zcm-main-nvue.css'></style>
+<style scoped>
+	.index-nav{
+		width: 142px;
+	}
+	.index-nav-image{
+		height: 58px; width: 58px;
+	}
+</style>

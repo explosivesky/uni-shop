@@ -1,0 +1,40 @@
+<template>
+		<div>
+			<!-- 公共列表 -->
+				<div style="width: 372.5px;" @click="openDetail">
+					<image :src="item.cover"></image>
+					<div class="p-1-5 j-sb py-2" style="height: 165px;">
+						<text class="lines-1 font font-weight">{{item.title}}</text>
+						<text class="lines-1 text-muted">{{item.desc}}</text>
+						<div class="flex-row a-end">
+							<nvue-price >{{item.oprice}}</nvue-price>
+							<text class="line-through ml-1 font-sm">￥{{item.pprice}}</text>
+						</div>
+					</div>
+				</div>
+		</div>
+</template>
+
+<script>
+	import nvuePrice from "@/components/common/nvue/nvue-price.nvue"
+	export default {
+		props:{
+			item:Object,
+			index:Number
+		},
+		components:{
+			nvuePrice
+		},
+		methods:{
+			openDetail(){
+				let detail = JSON.stringify(this.item)
+				uni.navigateTo({
+					url:"/pages/detail/detail?detail="+detail
+				})
+			}
+		}
+	}
+</script>
+<style src='@/common/zcm-main-nvue.css'></style>
+<style>
+</style>

@@ -1,0 +1,7 @@
+{
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "divider": "/components/common/divider",
+    "radio-groups": "/components/common/radio-groups"
+  }
+}

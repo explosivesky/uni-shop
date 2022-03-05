@@ -1,0 +1,106 @@
+<template>
+	<div>
+		<list :show-scrollbar="false">
+			<cell>
+				<!-- 轮播图 -->
+				<nvue-slider :swipers="swipers"></nvue-slider>
+				<!-- 图标 -->
+				<nvue-index-nav :indexNavs="indexNavs"/>
+				<!-- 分割线 -->
+				<nvue-divider/>
+				
+				<!-- 三图广告 -->
+				<nvue-three-advs :threeAdv="threeAdv"/>
+				<!-- 大图 -->
+				<nvue-one-advs :oneAdv="oneAdv"></nvue-one-advs>
+				<!-- 公共列表 -->
+				<div class="w-100 row" style="margin-top: 4px;">
+					<block v-for="(item,index) in commonList" :key="index">
+						<nvue-common-list :item="item" :index="index"/>
+					</block>
+				</div>
+			</cell>
+		</list>
+		
+	</div>
+</template>
+
+<script>
+	import nvueSlider from "@/components/index/nvue/nvue-slider.nvue"
+	import nvueIndexNav from "@/components/index/nvue/nvue-index-nav.nvue"
+	import nvueDivider from "@/components/common/nvue/nvue-divider.nvue"
+	import nvueThreeAdvs from "@/components/index/nvue/nvue-three-advs.nvue"
+	import nvueOneAdvs from "@/components/index/nvue/nvue-one-adv.nvue"
+	import nvueCommonList from "@/components/common/nvue/nvue-common-list.nvue"
+	
+	const currentWebview = plus.webview.currentWebview()
+	export default {
+		data:{
+			swipers:[
+			{src:'/static/images/demo/demo4.png'},
+			{src:'/static/images/demo/demo4.png'},
+			{src:'/static/images/demo/demo4.png'},
+			{src:'/static/images/demo/demo4.png'},
+			],
+			indexNavs:[
+				{src:'/static/images/indexnav/1.png',name:'新品分类'},
+				{src:'/static/images/indexnav/1.png',name:'新品分类'},
+				{src:'/static/images/indexnav/1.png',name:'新品分类'},
+				{src:'/static/images/indexnav/1.png',name:'新品分类'},
+				{src:'/static/images/indexnav/1.png',name:'新品分类'},
+				{src:'/static/images/indexnav/1.png',name:'新品分类'},
+				{src:'/static/images/indexnav/1.png',name:'新品分类'},
+				{src:'/static/images/indexnav/1.png',name:'新品分类'},
+				{src:'/static/images/indexnav/1.png',name:'新品分类'},
+				{src:'/static/images/indexnav/1.png',name:'新品分类'},
+			],
+		threeAdv: [
+			{ src: '../../static/images/demo/demo1.jpg' },
+			{ src: '../../static/images/demo/demo2.jpg' },
+			{ src: '../../static/images/demo/demo3.jpg' },
+			],
+		oneAdv:{
+			cover:'../../static/images/bg.jpg',
+			title:'每日精选'
+		},
+		commonList:[{
+				cover: '../../static/images/demo/demo10.jpg',
+				title: '米家空调',
+				desc: '1.5匹变频',
+				oprice: 1999,
+				pprice: 1666
+			},
+			{
+				cover: '../../static/images/demo/demo10.jpg',
+				title: '米家空调',
+				desc: '1.5匹变频',
+				oprice: 1999,
+				pprice: 1666
+			}]
+		},
+		components:{
+			nvueSlider,
+			nvueIndexNav,
+			nvueDivider,
+			nvueThreeAdvs,
+			nvueOneAdvs,
+			nvueCommonList
+		},
+		created(){
+			//因为nvue 没有 onshow 事件来触发 数据更新,所以使用以下方法
+			//通过 show 事件来监听当前窗口变化  记得=在 beforeDestroy销毁
+			currentWebview.addEventListener('show',e=>{
+				console.log('show')
+			})
+		},
+		beforeDestroy(){
+			//销毁事件处理函数
+			currentWebview.removeEventListener('show',e=>{})
+		}
+	}
+</script>
+
+<style src='@/common/zcm-main-nvue.css'></style>
+<style>
+
+</style>

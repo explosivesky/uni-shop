@@ -1,0 +1,7 @@
+{
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "card": "/components/common/card",
+    "radio-groups": "/components/common/radio-groups"
+  }
+}
